@@ -16,6 +16,18 @@ int userPrevent(void);
 
 int main(int argc, char * argv[]) {
 
+
+	pcap_t *handle;					/* Session handle */
+	char * dev, errbuf[PCAP_ERRBUF_SIZE];
+	struct bpf_program fp;			/* The compiled filter expression */
+	char filter_exp[] = "port 80";	/* The filter expression */
+	bpf_u_int32 mask;				/* The netmask of our sniffing device */
+	bpf_u_int32 net;				/* The IP of our sniffing device */
+
+
+
+
+
 	short result = 0;
 
 	// prevent windows os
@@ -24,12 +36,29 @@ int main(int argc, char * argv[]) {
 	// prevent common user's execute
 	result += userPrevent();
 
-
 	if(result > 0) {
 		return 1;
-	}	
+	}
 
 
+	
+
+	dev = pcap_lookupdev(errbuf);
+	if(dev == NULL) {
+		fprintf(stderr, "Couldn't find device: %s\n", errbuf);
+		return 1;
+	}
+
+	printf("[*] Your network device : %s\n", dev);
+	
+	
+
+
+	handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
+	if(handle == NULL) {
+		fprintf(stderr, "Couldn't open device %s: %s\n", dev, errbuf);
+		return 1;
+	}
 
 
 
