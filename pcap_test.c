@@ -23,8 +23,8 @@ int main(int argc, char * argv[]) {
 	char filter_exp[] = "port 80";		/* The filter expression */
 	bpf_u_int32 mask;			/* The netmask of our sniffing device */
 	bpf_u_int32 net;			/* The IP of our sniffing device */
-	const u_char *packet;
-	struct pcap_pkthdr header;
+	const u_char *packet;		// The actual packet
+	struct pcap_pkthdr header;	// The header that pcap gi
 
 
 
@@ -70,16 +70,15 @@ int main(int argc, char * argv[]) {
 		return 1;
 	}
 
+	int i = 0;
+	while(1) {
+		// Grab a packet
+		packet = pcap_next(handle, &header);
 
+		// print the length of packet
+		printf("[%d] Jacked a packet with length of [%d]\n", i++, header.len);
+	}
 
-	// Grab a packet
-	packet = pcap_next(handle, &header);
-
-	// print its length
-	printf("Jacked a packet with length of [%d]\n", header.len);
-	
-
-	// close the session
 	pcap_close(handle);
 
 	return 0;
