@@ -27,6 +27,9 @@ int main(int argc, char * argv[]) {
 	struct pcap_pkthdr header;	// The header that pcap gi
 
 
+	int i = 0;					// the valuable for counting while loop
+
+
 
 
 
@@ -34,9 +37,9 @@ int main(int argc, char * argv[]) {
 
 	// prevent windows os
 	result += OSprevent(isWindows);
-
 	// prevent common user's execute
 	result += userPrevent();
+
 
 	if(result > 0) {
 		return 1;
@@ -45,20 +48,28 @@ int main(int argc, char * argv[]) {
 
 	
 
+	// configure the network device name
 	dev = pcap_lookupdev(errbuf);
 	if(dev == NULL) {
 		fprintf(stderr, "Couldn't find device: %s\n", errbuf);
 		return 1;
 	}
 
+	// print my network device
 	printf("[*] Your network device : %s\n", dev);
 	
 	
+
+	// set handle for pcap
 	handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
 	if(handle == NULL) {
 		fprintf(stderr, "Couldn't open device %s: %s\n", dev, errbuf);
 		return 1;
 	}
+
+
+
+
 
 	// Compile and apply the filter 
 	if( pcap_compile(handle, &fp, filter_exp, 0, net) == -1 ) {
@@ -70,7 +81,9 @@ int main(int argc, char * argv[]) {
 		return 1;
 	}
 
-	int i = 0;
+
+
+
 	while(1) {
 		// Grab a packet
 		packet = pcap_next(handle, &header);
@@ -89,8 +102,7 @@ int main(int argc, char * argv[]) {
 
 
 
-/***********************************************************************/
-
+/* functions */
 
 
 
