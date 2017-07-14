@@ -23,6 +23,8 @@ int main(int argc, char * argv[]) {
 	char filter_exp[] = "port 80";		/* The filter expression */
 	bpf_u_int32 mask;			/* The netmask of our sniffing device */
 	bpf_u_int32 net;			/* The IP of our sniffing device */
+	const u_char *packet;
+	struct pcap_pkthdr header;
 
 
 
