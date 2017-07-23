@@ -24,7 +24,8 @@ struct ethernet_header
 };
 
 
-int main(int argc, char * argv[]) {
+int main(int argc, char * argv[]) 
+{
 
 
 	pcap_t *handle;				/* Session handle */
@@ -36,6 +37,7 @@ int main(int argc, char * argv[]) {
 	bpf_u_int32 net;			/* The IP of our sniffing device */
 	const u_char *packet;		// The actual packet
 	struct pcap_pkthdr header;	// The header that pcap gi
+	int result = 0;
 
 
 	int i = 0;					// the valuable for counting while loop
@@ -52,7 +54,8 @@ int main(int argc, char * argv[]) {
 	result += userPrevent();
 
 
-	if(result > 0) {
+	if(result > 0) 
+	{
 		return 1;
 	}
 
@@ -61,7 +64,9 @@ int main(int argc, char * argv[]) {
 
 	// configure the network device name
 	device = pcap_lookupdev(error_buffer);
-	if(dev == NULL) {
+	
+	if(dev == NULL) 
+	{
 		printf("[-] Error : $s\n", error_buffer);
 		return 1;
 	}
@@ -83,7 +88,9 @@ int main(int argc, char * argv[]) {
 	*/
 
 	handle = pcap_open_live(device, BUFSIZ, 1, 1000, error_buffer);
-	if(handle == NULL) {
+
+	if(handle == NULL) 
+	{
 		pritnf("[-] Error %s (device : %s)\n", error_buffer, device);
 		return 1;
 	}
@@ -100,12 +107,23 @@ int main(int argc, char * argv[]) {
        int pcap_compile(pcap_t *p, struct bpf_program *fp,
                const char *str, int optimize, bpf_u_int32 netmask);
 	*/
-	if( pcap_compile(handle, &fp, filter_exp, 0, net) == -1 ) {
-		fprintf(stderr, "Couldn't parse filter %s: %s", filter_exp, pcap_geterr(handle));
+
+	if( pcap_compile(handle, &fp, filter_exp, 0, net) == -1 ) 
+	{
+		printf("[-] Filter Error (your filter = %s) : %s\n", filter_exp, pcap_geterr(handle));
 		return 1;
 	}
-	if( pcap_setfilter(handle, &fp) == -1 ) {
-		fprintf(stderr, "Couldn't install filter %s: %s\n", filter_exp, pcap_geterr(handle));
+
+	/*
+		int pcap_setfilter(pcap_t *p, struct bpf_program *fp);
+	*/
+
+	// pcap_setfilter() returns 0 on success and -1 on failure.
+	result = pcap_setfilter(handle, $fp);
+	
+	if( result == -1 ) 				// This code means pcap_setfilter() returns false.
+	{
+		printf("[-] Filter Error (your fileter = %s) : %s\n", filter_exp, pcap_geterr(handle));
 		return 1;
 	}
 
@@ -134,8 +152,10 @@ int main(int argc, char * argv[]) {
 
 
 
-int OSprevent(int OSconf) {
-	if(OSconf) {
+int OSprevent(int OSconf) 
+{
+	if(OSconf) 
+	{
 		printf("[*] This program doesn't support your OS.\n");
 		return 1;
 	}
@@ -145,11 +165,13 @@ int OSprevent(int OSconf) {
 
 
 
-int userPrevent(void) {
+int userPrevent(void) 
+{
 	struct passwd * userPw;
 	userPw = getpwuid( getuid() );	
 	
-	if(userPw->pw_uid != 0) {
+	if(userPw->pw_uid != 0) 
+	{
 		printf("[*] If you want to execute this file, you must be a root.\n");
 		return 1;
 	}
