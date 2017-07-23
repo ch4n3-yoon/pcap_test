@@ -10,7 +10,8 @@
 #endif
 
 
-#define SIZE_ETHERNEET 14
+#define SIZE_ETHERNET 14
+#define IP_HL(ip)		(((ip)->ip_vhl) & 0x0f)
 
 
 int OSprevent(int OSconf);
@@ -49,7 +50,8 @@ int main(int argc, char * argv[])
 
 	const struct sniff_ethernet *ethernet;	/* The ethernet header */
 	const struct sniff_ip		*ip;		/* The IP header */
-	const struct sniff_tcp 		*tcp 		/* The TCP header */
+	const struct sniff_tcp 		*tcp;		/* The TCP header */
+
 
 
 	const char * payload;		/* Packet payload */
@@ -147,8 +149,15 @@ int main(int argc, char * argv[])
 		// grab a packet
 		packet = pcap_next(handle, &header);
 
-		ethernet = (struct sniff_ethernet *)(packet);
+		// analyse packet with ethernet header
+		ethernet 	= (struct sniff_ethernet *)(packet);
 
+		// SIZE_ETHERNET == 14
+		ip 			= (struct sniff_ip*)(packet + SIZE_ETHERNET);
+
+		size_ip 	= IP_HL(ip) * 4;
+
+		printf("[*][%d] the ip packet size : %d\n", i, size_ip);
 
 
 	}
@@ -169,6 +178,16 @@ int main(int argc, char * argv[])
 	
 
 }
+
+
+
+
+
+
+
+
+
+
 
 
 
