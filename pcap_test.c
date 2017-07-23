@@ -10,6 +10,9 @@
 #endif
 
 
+#define SIZE_ETHERNEET 14
+
+
 int OSprevent(int OSconf);
 int userPrevent(void);
 
@@ -37,16 +40,25 @@ int main(int argc, char * argv[])
 	bpf_u_int32 net;			/* The IP of our sniffing device */
 	const u_char *packet;		// The actual packet
 	struct pcap_pkthdr header;	// The header that pcap gi
-	int result = 0;
 
 
-	int i = 0;					// the valuable for counting while loop
-
-
+	int i = 0;					/* the valuable for counting for loop */
+	short result = 0;			/* variable for storing some return values */
 
 
 
-	short result = 0;
+	const struct sniff_ethernet *ethernet;	/* The ethernet header */
+	const struct sniff_ip		*ip;		/* The IP header */
+	const struct sniff_tcp 		*tcp 		/* The TCP header */
+
+
+	const char * payload;		/* Packet payload */
+
+
+	u_int size_ip;
+	u_int size_tcp;
+
+
 
 	// prevent windows os
 	result += OSprevent(isWindows);
@@ -64,15 +76,15 @@ int main(int argc, char * argv[])
 
 	// configure the network device name
 	device = pcap_lookupdev(error_buffer);
-	
-	if(dev == NULL) 
+
+	if(device == NULL) 
 	{
 		printf("[-] Error : $s\n", error_buffer);
 		return 1;
 	}
 
 	// print my network device
-	printf("[*] Your network device : %s\n", dev);
+	printf("[*] Your network device : %s\n", device);
 	
 
 
@@ -91,7 +103,7 @@ int main(int argc, char * argv[])
 
 	if(handle == NULL) 
 	{
-		pritnf("[-] Error %s (device : %s)\n", error_buffer, device);
+		printf("[-] Error %s (device : %s)\n", error_buffer, device);
 		return 1;
 	}
 
@@ -108,7 +120,8 @@ int main(int argc, char * argv[])
                const char *str, int optimize, bpf_u_int32 netmask);
 	*/
 
-	if( pcap_compile(handle, &fp, filter_exp, 0, net) == -1 ) 
+	result = pcap_compile(handle, &fp, filter_exp, 0, net);
+	if( result == -1 ) 
 	{
 		printf("[-] Filter Error (your filter = %s) : %s\n", filter_exp, pcap_geterr(handle));
 		return 1;
@@ -119,7 +132,7 @@ int main(int argc, char * argv[])
 	*/
 
 	// pcap_setfilter() returns 0 on success and -1 on failure.
-	result = pcap_setfilter(handle, $fp);
+	result = pcap_setfilter(handle, &fp);
 	
 	if( result == -1 ) 				// This code means pcap_setfilter() returns false.
 	{
@@ -129,14 +142,26 @@ int main(int argc, char * argv[])
 
 
 
-
-	while(1) {
-		// Grab a packet
+	for(i = 0; i < 10; i++)
+	{
+		// grab a packet
 		packet = pcap_next(handle, &header);
 
-		// print the length of packet
-		printf("[%d] Jacked a packet with length of [%d]\n", i++, header.len);
+		ethernet = (struct sniff_ethernet *)(packet);
+
+
+
 	}
+
+
+
+
+
+	// close the grabbing a packet
+
+	/*
+		void pcap_close(pcap_t *p);
+	*/	
 
 	pcap_close(handle);
 
