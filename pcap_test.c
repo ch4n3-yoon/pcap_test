@@ -17,8 +17,8 @@ int userPrevent(void);
 
 struct ethernet_header 
 {
-	char preamble[7] = { 0, };
-	char sfd = 0;
+	char preamble[7];
+	char sfd;
 
 
 };
@@ -28,7 +28,7 @@ int main(int argc, char * argv[]) {
 
 
 	pcap_t *handle;				/* Session handle */
-	char * dev, errbuf[PCAP_ERRBUF_SIZE];
+	char * device, errbuf[PCAP_ERRBUF_SIZE];
 	char * error_buffer[PCAP_ERRBUF_SIZE];
 	struct bpf_program fp;			/* The compiled filter expression */
 	char filter_exp[] = "port 80";		/* The filter expression */
@@ -60,7 +60,7 @@ int main(int argc, char * argv[]) {
 	
 
 	// configure the network device name
-	dev = pcap_lookupdev(error_buffer);
+	device = pcap_lookupdev(error_buffer);
 	if(dev == NULL) {
 		printf("[-] Error : $s\n", error_buffer);
 		return 1;
@@ -69,13 +69,22 @@ int main(int argc, char * argv[]) {
 	// print my network device
 	printf("[*] Your network device : %s\n", dev);
 	
-	
+
+
 	
 
+
 	// set handle for pcap
-	handle = pcap_open_live(dev, BUFSIZ, 1, 1000, errbuf);
+	// BUFSIZ is defined in pcap.h
+
+	/*
+		pcap_t *pcap_open_live(const char *device, int snaplen,
+                int promisc, int to_ms, char *errbuf);
+	*/
+
+	handle = pcap_open_live(device, BUFSIZ, 1, 1000, error_buffer);
 	if(handle == NULL) {
-		fprintf(stderr, "Couldn't open device %s: %s\n", dev, errbuf);
+		pritnf("[-] Error %s (device : %s)\n", error_buffer, device);
 		return 1;
 	}
 
@@ -83,7 +92,14 @@ int main(int argc, char * argv[]) {
 
 
 
+
+
 	// Compile and apply the filter 
+
+	/*
+       int pcap_compile(pcap_t *p, struct bpf_program *fp,
+               const char *str, int optimize, bpf_u_int32 netmask);
+	*/
 	if( pcap_compile(handle, &fp, filter_exp, 0, net) == -1 ) {
 		fprintf(stderr, "Couldn't parse filter %s: %s", filter_exp, pcap_geterr(handle));
 		return 1;
