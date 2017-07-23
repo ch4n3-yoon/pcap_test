@@ -14,11 +14,22 @@ int OSprevent(int OSconf);
 int userPrevent(void);
 
 
+
+struct ethernet_header 
+{
+	char preamble[7] = { 0, };
+	char sfd = 0;
+
+
+};
+
+
 int main(int argc, char * argv[]) {
 
 
 	pcap_t *handle;				/* Session handle */
 	char * dev, errbuf[PCAP_ERRBUF_SIZE];
+	char * error_buffer[PCAP_ERRBUF_SIZE];
 	struct bpf_program fp;			/* The compiled filter expression */
 	char filter_exp[] = "port 80";		/* The filter expression */
 	bpf_u_int32 mask;			/* The netmask of our sniffing device */
@@ -49,14 +60,15 @@ int main(int argc, char * argv[]) {
 	
 
 	// configure the network device name
-	dev = pcap_lookupdev(errbuf);
+	dev = pcap_lookupdev(error_buffer);
 	if(dev == NULL) {
-		fprintf(stderr, "Couldn't find device: %s\n", errbuf);
+		printf("[-] Error : $s\n", error_buffer);
 		return 1;
 	}
 
 	// print my network device
 	printf("[*] Your network device : %s\n", dev);
+	
 	
 	
 
