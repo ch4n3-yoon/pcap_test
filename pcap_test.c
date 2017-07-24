@@ -144,7 +144,8 @@ int main(int argc, char * argv[])
 	
 
 	// configure the network device name
-	device = pcap_lookupdev(error_buffer);
+	// device = pcap_lookupdev(error_buffer);
+	device = "dum0";
 
 	if(device == NULL) 
 	{
