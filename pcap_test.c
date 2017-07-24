@@ -12,8 +12,7 @@
 
 
 #define SIZE_ETHERNET 14
-#define IP_HL(ip)		(((ip)->ip_vhl) & 0x0f)
-#define IP_V(ip) 		(((ip)->ip_vhl) >> 4)
+
 
 
 #define IP_RF	0x8000;
@@ -25,6 +24,20 @@ int OSprevent(int OSconf);
 int userPrevent(void);
 
 
+#define ETHER_ADDR_LEN	6
+
+/* Ethernet Header */
+struct sniff_ethernet
+{
+	u_char 	ether_dhost[ETHER_ADDR_LEN];	/* Destination host mac address */
+	u_char 	ether_shost[ETHER_ADDR_LEN];	/* Source host mac address */
+	u_short	ehter_type;				/* IP or ARP or RARP or etc. */
+};
+
+
+
+#define IP_HL(ip)		(((ip)->ip_vhl) & 0x0f)
+#define IP_V(ip) 		(((ip)->ip_vhl) >> 4)
 
 struct sniff_ip 
 {
@@ -220,8 +233,8 @@ int main(int argc, char * argv[])
 		}
 		
 
-		tcp = (struct sniff_tcp *)(packet + SIZE_ETHERNET + size_ip);
-		size_tcp = TH_OFF(tcp) * 4;
+		tcp 		= (struct sniff_tcp *)(packet + SIZE_ETHERNET + size_ip);
+		size_tcp 	= TH_OFF(tcp) * 4;
 
 		// printf("[*][%d] the ip packet size : %d\n", i, size_ip);
 
@@ -233,7 +246,34 @@ int main(int argc, char * argv[])
 		}
 
 
+
+		// the content of the http packet
 		payload = (u_char *)(packet + SIZE_ETHERNET + size_ip + size_tcp);
+
+
+		printf("[*] Destination\tMAC :\t");
+
+
+		/* print the destination mac address */
+		for(i=0; i < ETHER_ADDR_LEN; i++) 
+		{
+			printf("%02x:", ethernet->ether_dhost[i]);
+		}
+
+		printf("\b \n");
+
+
+
+
+		printf("[*] Source\tMAC : \t");
+
+
+		/* print the source mac address */
+		for(i = 0; i < ETHER_ADDR_LEN; i++) {
+			printf("%02x:", ethernet->ether_shost[i]);
+		}
+		printf("\b \n");
+
 
 
 		printf("\n\n[*] Grabbed packet : \n");
