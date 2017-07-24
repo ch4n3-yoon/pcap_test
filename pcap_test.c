@@ -3,6 +3,7 @@
 #include <pwd.h>	// configure user's id.
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <netinet/if_ether.h>
 
 
 #ifdef _WIN32
@@ -285,7 +286,7 @@ int main(int argc, char * argv[])
 		/* </Mac Address> */
 
 
-		if(ntohs(ethernet->ether_type) == 0x0800)
+		if(ntohs(ethernet->ether_type) == ETHERTYPE_IP)
 		{
 
 			printf("[*] The Ethertype Type is IPv4\n");
