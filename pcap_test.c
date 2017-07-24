@@ -12,6 +12,12 @@
 
 #define SIZE_ETHERNET 14
 #define IP_HL(ip)		(((ip)->ip_vhl) & 0x0f)
+#define IP_V(ip) 		(((ip)->ip_vhl) >> 4)
+
+
+#define IP_RF	0x8000;
+#define IP_DF	0x4000;
+#define IP_MF	0x2000;
 
 
 int OSprevent(int OSconf);
@@ -19,11 +25,18 @@ int userPrevent(void);
 
 
 
-struct ethernet_header 
+struct sniff_ip 
 {
-	char preamble[7];
-	char sfd;
+	u_char	ip_vhl;		/* version << 4 | header length >> 2 */
+	u_char	ip_tos;		/* type of serice */
+	u_short ip_len;		/* total length */
+	u_short ip_id;		/* identification */
+	u_short	ip_off		/* fragment offset field */
 
+	u_char	ip_tll;		/* time to live */
+	u_char	ip_p;		/* protocol */ 
+	u_short	ip_sum;		/* checksum */
+	struct in_addr	ip_src, ip_dst;		/* source and dest ip address */
 
 };
 
@@ -153,9 +166,11 @@ int main(int argc, char * argv[])
 		ethernet 	= (struct sniff_ethernet *)(packet);
 
 		// SIZE_ETHERNET == 14
-		ip 			= (struct sniff_ip*)(packet + SIZE_ETHERNET);
+		ip 			= (struct sniff_ip *)(packet + SIZE_ETHERNET);
 
 		size_ip 	= IP_HL(ip) * 4;
+
+		// size_ip 	= (ip->ip_vhl) & 0x0F;
 
 		printf("[*][%d] the ip packet size : %d\n", i, size_ip);
 
