@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <pcap.h>
 #include <pwd.h>	// configure user's id.
+#include <netinet/in.h>
 
 
 #ifdef _WIN32
@@ -31,9 +32,9 @@ struct sniff_ip
 	u_char	ip_tos;		/* type of serice */
 	u_short ip_len;		/* total length */
 	u_short ip_id;		/* identification */
-	u_short	ip_off		/* fragment offset field */
+	u_short	ip_off;		/* fragment offset field */
 
-	u_char	ip_tll;		/* time to live */
+	u_char	ip_ttl;		/* time to live */
 	u_char	ip_p;		/* protocol */ 
 	u_short	ip_sum;		/* checksum */
 	struct in_addr	ip_src, ip_dst;		/* source and dest ip address */
