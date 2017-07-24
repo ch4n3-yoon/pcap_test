@@ -104,8 +104,12 @@ int main(int argc, char * argv[])
 	const char * payload;		/* Packet payload */
 
 
+
+
 	u_int size_ip;
 	u_int size_tcp;
+
+
 
 
 
@@ -211,7 +215,8 @@ int main(int argc, char * argv[])
 		if(size_ip < 20) 
 		{
 			printf("[-] Invalid IP header length : %u bytes\n", size_ip);
-			return 1;
+			break;
+			// return 1;
 		}
 		
 
@@ -219,6 +224,22 @@ int main(int argc, char * argv[])
 		size_tcp = TH_OFF(tcp) * 4;
 
 		// printf("[*][%d] the ip packet size : %d\n", i, size_ip);
+
+		if(size_tcp < 20)
+		{
+			printf("[-] Invalid TCP header length : %u bytes\n", size_tcp);
+			break;
+			// return 1;
+		}
+
+
+		payload = (u_char *)(packet + SIZE_ETHERNET + size_ip + size_tcp);
+
+
+		printf("[*] Grabbed packet : \n");
+		printf("========================================\n");
+		printf("%s\n", payload);
+		printf("========================================\n");
 
 
 	}
