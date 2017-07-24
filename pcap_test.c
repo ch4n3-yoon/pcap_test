@@ -236,7 +236,7 @@ int main(int argc, char * argv[])
 		payload = (u_char *)(packet + SIZE_ETHERNET + size_ip + size_tcp);
 
 
-		printf("[*] Grabbed packet : \n");
+		printf("\n\n[*] Grabbed packet : \n");
 		printf("========================================\n");
 		printf("%s\n", payload);
 		printf("========================================\n");
