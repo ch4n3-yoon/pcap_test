@@ -38,8 +38,41 @@ struct sniff_ip
 	u_char	ip_p;		/* protocol */ 
 	u_short	ip_sum;		/* checksum */
 	struct in_addr	ip_src, ip_dst;		/* source and dest ip address */
+};
+
+
+
+/* TCP Header */
+typedef u_int tcp_seq;
+
+struct sniff_tcp 
+{
+	u_short th_sport;		/* soure port */
+	u_short th_dport;		/* destination port */
+	tcp_seq	th_seq;			/* sequence number */
+	tcp_seq	th_ack;			/* acknowledgement number */
+	u_char 	th_offx2;		/* data offset, rsvd */
+
+	u_char th_flags;		/* like fin, syn, rst.. */
+#define TH_FIN	0x01
+#define TH_SYN 	0x02
+#define TH_RST 	0x04
+#define TH_PUSH 0x08
+#define TH_ACK 	0x10
+#define TH_URG 	0x20
+#define TH_ECE	0x40
+#define TH_CWR 	0x80
+#define TH_FLAGS 	(TH_FIN|TH_SYN|TH_RST|TH_ACK|TH_URG|TH_ECE|TH_CWR)
+
+	u_short	th_win; 		/* window */
+	u_short th_sum;			/* check sum */
+	u_short th_urp;			/* urgent pointer */
+
 
 };
+
+
+#define TH_OFF(th)		(((th)->th_offx2 & 0xf0) >> 4)
 
 
 int main(int argc, char * argv[]) 
@@ -47,7 +80,7 @@ int main(int argc, char * argv[])
 
 
 	pcap_t *handle;				/* Session handle */
-	char * device, errbuf[PCAP_ERRBUF_SIZE];
+	char * device;
 	char * error_buffer[PCAP_ERRBUF_SIZE];
 	struct bpf_program fp;			/* The compiled filter expression */
 	char filter_exp[] = "port 80";		/* The filter expression */
@@ -169,11 +202,23 @@ int main(int argc, char * argv[])
 		// SIZE_ETHERNET == 14
 		ip 			= (struct sniff_ip *)(packet + SIZE_ETHERNET);
 
+
+		// store the length of the ip packet
+		// size_ip 	= (ip->ip_vhl) & 0x0F;
 		size_ip 	= IP_HL(ip) * 4;
 
-		// size_ip 	= (ip->ip_vhl) & 0x0F;
 
-		printf("[*][%d] the ip packet size : %d\n", i, size_ip);
+		if(size_ip < 20) 
+		{
+			printf("[-] Invalid IP header length : %u bytes\n", size_ip);
+			return 1;
+		}
+		
+
+		tcp = (struct sniff_tcp *)(packet + SIZE_ETHERNET + size_ip);
+		size_tcp = TH_OFF(tcp) * 4;
+
+		// printf("[*][%d] the ip packet size : %d\n", i, size_ip);
 
 
 	}
