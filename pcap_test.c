@@ -289,19 +289,22 @@ int main(int argc, char * argv[])
 		if(ntohs(ethernet->ether_type) == ETHERTYPE_IP)
 		{
 
+			char ip_str[INET_ADDRSTRLEN];
+
 			printf("[*] The Ethertype Type is IPv4\n");
 
 
 
 			/* print the source ip address */
 			printf("[*] Source\tIP : \t");
-			printf("%s\n", inet_ntoa(ip->ip_src));
+			printf("%s\n", inet_ntop(AF_INET, &(ip->ip_src), ip_str, INET_ADDRSTRLEN));
 
 
 
 			/* print the destination ip address */
 			printf("[*] Destination\tIP : \t");
-			printf("%s\n", inet_ntoa(ip->ip_dst));
+			printf("%s\n", inet_ntop(AF_INET, &(ip->ip_dst), ip_str, INET_ADDRSTRLEN));
+			
 			
 
 		}
