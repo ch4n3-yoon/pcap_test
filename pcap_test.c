@@ -2,6 +2,7 @@
 #include <pcap.h>
 #include <pwd.h>	// configure user's id.
 #include <netinet/in.h>
+#include <arpa/inet.h>
 
 
 #ifdef _WIN32
@@ -102,6 +103,7 @@ int main(int argc, char * argv[])
 	const u_char *packet;		// The actual packet
 	struct pcap_pkthdr header;	// The header that pcap gi
 
+	unsigned char ip_addr[4];
 
 	int i = 0;					/* the valuable for counting for loop */
 	short result = 0;			/* variable for storing some return values */
@@ -270,7 +272,7 @@ int main(int argc, char * argv[])
 		printf("\b \n");
 
 
-		printf("[*] Destination\tMAC : \t");
+		printf("[*] Destination\tMAC :\t");
 
 
 		/* print the source mac address */
@@ -285,7 +287,22 @@ int main(int argc, char * argv[])
 
 		if(ntohs(ethernet->ether_type) == 0x0800)
 		{
+
 			printf("[*] The Ethertype Type is IPv4\n");
+
+
+
+			/* print the source ip address */
+			printf("[*] Source\tIP : \t");
+			printf("%s\n", inet_ntoa(ip->ip_src));
+
+
+
+			/* print the destination ip address */
+			printf("[*] Destination\tIP : \t");
+			printf("%s\n", inet_ntoa(ip->ip_dst));
+			
+
 		}
 
 
@@ -296,18 +313,8 @@ int main(int argc, char * argv[])
 
 
 
-		printf("[*] Source\tIP : \t");
-
-		/* print the source ip address */
-
-		printf("\n");
 
 
-
-
-		printf("[*] Destination\tIP : \t");
-
-		printf("\n");
 
 
 
