@@ -314,7 +314,11 @@ int main(int argc, char * argv[])
 
 
 
+		printf("[*] Source\tTCP port :\t");
+		printf("%d\n", ntohs(tcp->th_sport) );
 
+		printf("[*] Destination\tTCP prot :\t");
+		printf("%d\n", ntohs(tcp->th_dport) );
 
 
 
