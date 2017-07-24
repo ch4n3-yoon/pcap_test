@@ -31,7 +31,7 @@ struct sniff_ethernet
 {
 	u_char 	ether_dhost[ETHER_ADDR_LEN];	/* Destination host mac address */
 	u_char 	ether_shost[ETHER_ADDR_LEN];	/* Source host mac address */
-	u_short	ehter_type;				/* IP or ARP or RARP or etc. */
+	u_short	ether_type;				/* IP or ARP or RARP or etc. */
 };
 
 
@@ -251,28 +251,66 @@ int main(int argc, char * argv[])
 		payload = (u_char *)(packet + SIZE_ETHERNET + size_ip + size_tcp);
 
 
-		printf("[*] Destination\tMAC :\t");
+
+
+
+
+		/* <Mac Address> */
+
+
+		printf("[*] Source\tMAC :\t");
 
 
 		/* print the destination mac address */
 		for(i=0; i < ETHER_ADDR_LEN; i++) 
 		{
-			printf("%02x:", ethernet->ether_dhost[i]);
+			printf("%02x:", ethernet->ether_shost[i]);
 		}
 
 		printf("\b \n");
 
 
-
-
-		printf("[*] Source\tMAC : \t");
+		printf("[*] Destination\tMAC : \t");
 
 
 		/* print the source mac address */
 		for(i = 0; i < ETHER_ADDR_LEN; i++) {
-			printf("%02x:", ethernet->ether_shost[i]);
+			printf("%02x:", ethernet->ether_dhost[i]);
 		}
-		printf("\b \n");
+		printf("\b \n\n");
+
+
+		/* </Mac Address> */
+
+
+		if(ntohs(ethernet->ether_type) == 0x0800)
+		{
+			printf("[*] The Ethertype Type is IPv4\n");
+		}
+
+
+		else 
+		{
+			printf("[-] That Ethernet Type is not supported. sorry T.T (Your Ether Type : 0x%04x) \n", ntohs(ethernet->ether_type));
+		}
+
+
+
+		printf("[*] Source\tIP : \t");
+
+		/* print the source ip address */
+
+		printf("\n");
+
+
+
+
+		printf("[*] Destination\tIP : \t");
+
+		printf("\n");
+
+
+
 
 
 
@@ -280,6 +318,8 @@ int main(int argc, char * argv[])
 		printf("========================================\n");
 		printf("%s\n", payload);
 		printf("========================================\n");
+
+		printf("\n\n\n");
 
 
 	}
