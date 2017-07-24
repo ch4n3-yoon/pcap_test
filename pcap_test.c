@@ -325,12 +325,12 @@ int main(int argc, char * argv[])
 
 
 
-		printf("\n\n[*] Grabbed packet : \n");
+		printf("\n[*] Grabbed packet data : \n");
 		printf("========================================\n");
 		printf("%s\n", payload);
 		printf("========================================\n");
 
-		printf("\n\n\n");
+		printf("\n\n\n\n\n");
 
 
 	}
