@@ -295,9 +295,14 @@ int main(int argc, char * argv[])
 		/* </Mac Address> */
 
 
+
+		// is ethernet type IPv4 ?
 		if(ntohs(ethernet->ether_type) == ETHERTYPE_IP)
 		{
 
+			/* <IP Address> */
+
+			/* INET_ADDRSTRLEN == 16 */
 			char ip_str[INET_ADDRSTRLEN];
 
 			printf("[*] The Ethertype Type is IPv4\n");
@@ -316,16 +321,19 @@ int main(int argc, char * argv[])
 			
 			
 
+			/* </IP Address> */
 		}
+
 
 
 		else 
 		{
-			printf("[-] That Ethernet Type is not supported. sorry T.T (Your Ether Type : 0x%04x) \n", ntohs(ethernet->ether_type));
+			printf("[-] That Ethernet Type is not supported. sorry T.T \n\t\t(Your Ethernet Type : 0x%04x) \n", ntohs(ethernet->ether_type));
 		}
 
 
 
+		/* <TCP Port> */
 
 		printf("[*] Source\tTCP port :\t");
 		printf("%d\n", ntohs(tcp->th_sport) );
@@ -333,7 +341,7 @@ int main(int argc, char * argv[])
 		printf("[*] Destination\tTCP prot :\t");
 		printf("%d\n", ntohs(tcp->th_dport) );
 
-
+		/* </TCP Port> */
 
 
 
