@@ -119,6 +119,7 @@ int main(int argc, char * argv[])
 
 	const char * payload;		/* Packet payload */
 
+	int packet_count = 0;
 
 
 
@@ -217,7 +218,7 @@ int main(int argc, char * argv[])
 
 
 
-	for(i = 0; i < 10; i++)
+	for(packet_count = 0; packet_count < 10; packet_count++)
 	{
 		// grab a packet
 		packet = pcap_next(handle, &header);
@@ -261,6 +262,8 @@ int main(int argc, char * argv[])
 
 
 
+
+		printf("[%02d] Packet Information\n", packet_count);
 
 
 
