@@ -145,13 +145,18 @@ int main(int argc, char * argv[])
 
 	// configure the network device name
 	// device = pcap_lookupdev(error_buffer);
-	device = "dum0";
-
-	if(device == NULL) 
+	if(argc < 2)
 	{
-		printf("[-] Error : $s\n", error_buffer);
+		printf("[*] Usage : %s [Network Interface]\n", argv[0]);
 		return 1;
 	}
+
+	else 
+	{
+		device = argv[1];
+	}
+
+	
 
 	// print my network device
 	printf("[*] Your network device : %s\n", device);
